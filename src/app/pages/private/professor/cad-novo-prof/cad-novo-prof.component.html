@@ -1,0 +1,184 @@
+<app-titulo class="text-center" [titulo]="'Professores'"></app-titulo>
+<div class="d-flex">
+  <div class="form-inline mr-auto">
+    <div class="form-group mb-2">
+      <label class="mr-2">Filtro:</label> 
+      <input type="text" class="form-control mr-2" 
+      placeholder="buscar"
+      [(ngModel)]="filtro">    
+    </div>
+  </div>
+  <div>
+    <button class="btn btn-outline-success" (click)="novoProfessor(template)">    
+      <i class="fas fa-plus-circle"></i>&nbsp;
+      Novo Professor
+    </button>
+  </div>
+</div>
+<h3>Filtro: {{ filtro }}</h3>
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>#</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Cursos</th>
+        <th colSpan="2">Opções</th>       
+    </tr>
+  </thead>
+  <tbody *ngIf="professores && professores.length">
+    <tr *ngFor="let professor of profFilter">     
+      <td>{{professor.id}}</td>
+        <td>{{professor.nome}}</td>
+        <td>{{professor.email}}</td> 
+        <td>
+          <div *ngIf="!professor.cursos.length">
+            Não informado
+          </div>
+          <div *ngIf="professor.cursos.length">
+            {{professor.cursos[0].nome | uppercase}}        
+          </div>
+        </td>
+      <td>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-success" tooltip="Editar" (click)="editProfessor(professor, template)">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" tooltip="Excluir" (click)="excluirProfessor(professor, confirm)">
+            <i class="fa fa-eraser"></i>
+          </button>
+        </div>
+      </td> 
+    </tr>
+  </tbody>
+  <tfoot *ngIf="!professores">
+    <tr>
+      <td colSpan="7" class="text-center">
+        <h3>Nenhum professor encontrado!</h3>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<div bsModal #template="bs-modal" class="modal fade" tabindex="-1"
+role="dialog" aria-labelledby="dialog-sizes-name1">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 id="dialog-sizes-name1" class="modal-title pull-left">Cadastro</h4>
+      <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="formProfessor">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Nome do Professor</label>
+            <input type="text" class="form-control" formControlName="nome" placeholder="Digite um nome">
+            <div *ngIf="form.nome.errors?.required" class="invalid-feedback"></div>           
+          </div>
+          <div class="form-group col-md-6">
+            <label>Email</label>
+            <input type="text" class="form-control" formControlName="email" placeholder="nome@email.com">
+            <div *ngIf="form.email.errors?.required" class="invalid-feedback"></div>
+          </div>       
+        </div>  
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Senha</label>
+            <input type="password" class="form-control" formControlName="senha">
+            <div *ngIf="form.senha.errors?.required" class="invalid-feedback"></div>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="">Tipo de usuário:</label>                    
+            <select class="form-control" formControlName="tipo" type="text" placeholder="Selecione o tipo">                      
+                <option [value]="1">Professor</option>
+            </select>
+            <div *ngIf="form.tipo.errors?.required" class="invalid-feedback"></div>
+        </div>                  
+        </div >
+      </form>
+      <br>
+      <div bsModal #templateCurso="bs-modal" class="card rounded shadow-sm mt-4" *ngIf="mEdit"> 
+        <div class="p-3">
+          <div class="d-flex border-bottom">
+            <h2 class="mr-auto">
+              Curso
+            </h2>
+            <h2>
+              <i class="fas fa-award"></i>        
+            </h2>
+          </div>
+          <p>Clique em curso para adicionar.</p>
+          <div class="form-row p-1">
+            <div [formGroup]="formProfessor" class="col">
+              <div formArrayName="cursos" *ngFor="let curso of cursos.controls; let i=index">
+                <fieldset [formGroupName]="i" class="form-group">
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label>Nome do Curso</label>
+                    <input
+                    [ngClass]="validarCss(cursos.get(i+'.nome'))" type="text" class="form-control" formControlName="nome">
+                  </div>                  
+                  <div class="form-group col-md-6">
+                    <label>Descrição</label>
+                    <input type="text" class="form-control" [ngClass]="validarCss(cursos.get(i+'.descricao'))" formControlName="descricao">
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <button (click)="addCurso()" class="d-flex btn btn-outline-primary">
+          <i class="fa fa-plus-circle my-1"></i>
+          <b class="ml-1">Curso</b>
+        </button>
+      </div>
+    </div>
+    <br>
+  </div>
+  <div class="modal-footer d-flex">
+    <button class="btn btn-secondary" (click)="template.hide()">
+      Fechar
+    </button>
+    <button class="btn btn-success ml-auto" [disabled]="!formProfessor.valid" (click)="salvarAlteracao(template)">
+      Salvar Alterações
+    </button>
+  </div>
+</div>
+</div>
+</div>
+<div bsModal #confirm="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Deletando Professor
+        </h4>
+        <button type="button" class="close pull-right"  aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ deleteProf }}</p>
+      </div>    
+      <div class="modal-footer btn-group d-flex">      
+        <button type="button" class="btn btn-outline-danger" >
+          CENCELAR
+        </button>
+        <button type="button" class="btn btn-outline-success" >
+          DELETAR
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Tem certeza que quer deletar o curso {{this.cursoAtual.nome}}?</p>
+    <button type="button" class="btn btn-default" (click)="confirmDeleteCurso()">Sim</button>
+    <button type="button" class="btn btn-primary" (click)="declineDeleteCurso()">Não</button>
+  </div>
+</ng-template>

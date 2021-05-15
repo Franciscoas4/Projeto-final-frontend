@@ -1,0 +1,79 @@
+<div class="container">
+    <div class="row mt-12">
+      
+      
+      <div class="col-md-6" >
+          <form class="p-1" [formGroup]="formUsuario">     
+          <h1>Cadastro de Professor</h1>       
+              <div class="form-row">
+                  <div class="form-group col-sm-12">
+                      <label>Nome</label>
+                      <input type="text" class="form-control" formControlName="nome"
+                      [ngClass]="{'is-invalid': form.nome.errors && form.nome.touched }"
+                      placeholder="Insira o nome"/>
+                      <div *ngIf="form.nome.errors?.required" class="invalid-feedback">
+                          Nome é obrigatório.
+                      </div>
+                      <div *ngIf="form.nome.errors?.minlength" class="invalid-feedback">
+                          Nome deve ter no mínimo 3 caracteres.
+                      </div>
+                      <div *ngIf="form.nome.errors?.maxlength" class="invalid-feedback">
+                          Nome deve ter no máximo 50 caracteres.
+                      </div>
+                  </div>
+                  <div class="form-group col-sm-12">
+                      <label for="">Email:</label>
+                      <input class="form-control" formControlName="email" type="text"  
+                      [ngClass]="{'is-invalid': form.email.errors && form.email.touched }"
+                      placeholder="Insira o email"/>
+                      <div *ngIf="form.email.errors?.required" class="invalid-feedback" class="invalid-feedback">
+                          E-mail é obrigatório.
+                      </div>
+                      <div *ngIf="form.email.errors?.email && form.email.touched" class="invalid-feedback">
+                          Deve ser um endereço de e-mail válido
+                      </div>
+                  </div>       
+              </div>          
+              <div class="form-row">
+                  <div class="form-group col-sm-6">
+                      <label for="">Senha:</label>
+                      <input class="form-control" formControlName="senha" type="password" 
+                      [ngClass]="{'is-invalid': form.senha.errors && form.senha.touched }"
+                      placeholder="Digite uma Senha"/>
+                      <div *ngIf="form.senha.errors?.required && form.senha.touched" class="invalid-feedback">
+                          Senha é obrigatório.
+                      </div>
+                      <div *ngIf="form.senha.errors?.minlength && form.senha.touched" class="invalid-feedback">
+                          Senha deve ter no mínimo 6 caracteres.
+                      </div>
+                  </div>
+                  <div class="form-group col-sm-6">
+                      <label for="">Tipo de usuário:</label>                    
+                      <select class="form-control" formControlName="tipo" type="text" 
+                          [ngClass]="{'is-invalid': form.tipo.errors && form.tipo.touched }"
+                          placeholder="Digite uma tipo">                      
+                          <option [value]="1">Professor</option>
+                      </select>
+                      <div *ngIf="form.tipo.errors?.required && form.tipo.touched" class="invalid-feedback">
+                          Tipo de usuario é obrigatório.
+                      </div>          
+                  </div>        
+              </div>            
+              <div class="form-row">
+                  <div class="form-group col-12">
+                      <button class="btn btn-lg btn-success btn-block px-5" (click)="onSubmit()" [disabled]="form.invalid">
+                          Registar
+                      </button>
+                  </div>
+              </div>
+              <div class="form-row">
+                  <div class="form-group col-12">
+                      <a class="btn btn-link btn-block" routerLink="/login">
+                          Já sou Cadastrado
+                      </a>
+                  </div>
+              </div>
+          </form>
+      </div>
+    </div>
+    </div>

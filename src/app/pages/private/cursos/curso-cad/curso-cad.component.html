@@ -1,0 +1,177 @@
+<app-titulo class="text-center" [titulo]="'Cadastrar Cursos'"></app-titulo>
+<div class="card rounded shadow-sm p-3">
+  <div class="d-flex">
+    <div class="form-inline mr-auto">
+      <div class="form-group mb-2">
+        <label class="mr-2">Filtro:</label> 
+        <input type="text" class="form-control mr-2" 
+        placeholder="buscar"
+        [(ngModel)]="filtro">    
+      </div>
+    </div>
+    <div>
+      <button class="btn btn-outline-success" (click)="novoCurso(template)">    
+        <i class="fas fa-plus-circle"></i>&nbsp;
+        Novo Curso
+      </button>
+    </div>
+  </div>
+  <h3>Filtro: {{ filtro }}</h3>
+  <table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>       
+        <th>#</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Professor Id</th>        
+        <th>Aulas</th>
+        <th colSpan="2">Opções</th>           
+      </tr>
+    </thead>
+    <tbody *ngIf="cursos && cursos.length">
+      <tr *ngFor="let curso of filterProf">        
+        <td>{{curso.id}}</td>
+        <td>{{curso.nome}}</td>
+        <td>{{curso.descricao}}</td>        
+        <td>{{curso.idProfessor}}</td>
+        <td>
+          <div *ngIf="!curso.aulas.length">
+            Não informado
+          </div>
+          <div *ngIf="curso.aulas.length">           
+            {{curso.aulas[0].nome | uppercase}}        
+          </div>
+        </td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-success" tooltip="Editar" (click)="editarCurso(curso, template)">
+              <i class="fa fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-danger" tooltip="Excluir" (click)="excluirCurso(curso, confirm)">
+              <i class="fa fa-eraser"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>  
+  </table> 
+</div>
+
+<div bsModal #template="bs-modal" class="modal fade" tabindex="-1"
+role="dialog" aria-labelledby="dialog-sizes-name1">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 id="dialog-sizes-name1" class="modal-title pull-left">Cadastro</h4>
+      <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="formCurso">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Nome</label>
+            <input type="text" class="form-control" [ngClass]="validarCss(f.nome)" formControlName="nome" placeholder="Digite um nome">              
+          </div>
+          <div class="form-group col-md-6">
+            <label>Descrição</label>
+            <input type="text" class="form-control" [ngClass]="validarCss(f.descricao)" placeholder="Digite uma descrição" formControlName="descricao">              
+          </div>                
+        </div>           
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Professor ID</label>
+            <input type="text" class="form-control" [ngClass]="validarCss(f.idProfessor)" placeholder="Digite um Professor" formControlName="idProfessor">
+          </div>          
+        </div>          
+      </form>      
+      <div bsModal #templateAula="bs-modal" class="card rounded shadow-sm mt-4" *ngIf="mEdit"> 
+        <div class="p-3">
+          <div class="d-flex border-bottom">
+            <h2 class="mr-auto">
+              Aulas do Curso
+            </h2>
+            <h2>
+              <i class="fas fa-award"></i>        
+            </h2>
+          </div>
+          <p>Clique em Aula para adicionar e preencher novas Aulas</p>
+          <div class="form-row p-1">
+            <div [formGroup]="form" class="col">
+              <div formArrayName="aulas" *ngFor="let aula of aulas.controls; let i=index">
+                <fieldset [formGroupName]="i" class="form-group">
+                <div class="row">
+                  <div class="form-group col-md-4">
+                    <label>Nome da Aula</label>
+                    <input [ngClass]="cssValidator(aulas.get(i+'.nome'))" type="text"  class="form-control" formControlName="nome">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label>Duração</label>
+                    <input type="text" class="form-control" [ngClass]="cssValidator(aulas.get(i+'.duracao'))" formControlName="duracao">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label>Curso Id</label>
+                    <input type="text" class="form-control" [ngClass]="cssValidator(aulas.get(i+'.idCurso'))" formControlName="idCurso">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label>Tópicos</label>
+                    <input type="text" class="form-control" [ngClass]="cssValidator(aulas.get(i+'.topicos'))" formControlName="topicos">
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <button (click)="adicionarAula()" class="d-flex btn btn-outline-primary">
+          <i class="fa fa-plus-circle my-1"></i>
+          <b class="ml-1">Aula</b>
+        </button>
+      </div>
+    </div>
+    <br>
+  </div>
+  <div class="modal-footer d-flex">
+    <button class="btn btn-secondary" (click)="template.hide()">
+      Fechar
+    </button>
+    <button class="btn btn-success ml-auto" [disabled]="!formCurso.valid" (click)="salvarAlteracao(template)">
+      Salvar Alterações
+    </button>
+  </div>
+</div>
+</div>
+</div>
+<div bsModal #confirm="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Deletando Curso
+        </h4>
+        <button type="button" class="close pull-right" (click)="confirm.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ delCurso }}</p>
+      </div>    
+      <div class="modal-footer btn-group d-flex">      
+        <button type="button" class="btn btn-outline-danger" (click)="confirm.hide()">
+          CENCELAR
+        </button>
+        <button type="button" class="btn btn-outline-success" (click)="confirmDelete(confirm)">
+          DELETAR
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Tem certeza que quer deletar a aula {{this.aulaAtual.nome}}?</p>
+    <button type="button" class="btn btn-default" (click)="confirmDeleteAula()">Sim</button>
+    <button type="button" class="btn btn-primary" (click)="declineDeleteAula()">Não</button>
+  </div>
+</ng-template>

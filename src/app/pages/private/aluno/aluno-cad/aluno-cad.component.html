@@ -1,0 +1,188 @@
+<app-titulo class="text-center" [titulo]="'Alunos'"></app-titulo>
+<div class="card rounded shadow-sm p-3">
+  <div class="d-flex">    
+    <div class="form-inline mr-auto"></div>
+    <div>
+      <button class="btn btn-outline-success mb-2" (click)="novoAluno(template)">    
+        <i class="fas fa-plus-circle"></i>&nbsp;
+        Novo Aluno
+      </button>
+    </div>
+  </div>
+  <div class="input-group mb-2 mr-2">
+    <div class="input-group-prepend">
+      <div class="input-group-text">Filtro: </div>
+    </div>
+    <input type="text" class="form-control" placeholder="Filtrar por nome" [(ngModel)]="filtro" >
+  </div>
+  <table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>       
+        <th>#</th>
+        <th>Nome</th>
+        <th>Idade</th>
+        <th>Email</th>        
+        <th>Formação</th>
+        <th>Cursos</th>
+        <th colSpan="2">Opções</th>           
+      </tr>
+    </thead>
+    <tbody *ngIf="alunos && alunos.length">
+      <tr *ngFor="let aluno of alunosFiltrados">        
+        <td>{{aluno.id}}</td>
+        <td>{{aluno.nome}}</td>
+        <td>{{aluno.idade}}</td>        
+        <td>{{aluno.email}}</td>
+        <td>{{aluno.formacao}}</td>        
+        <td>
+          <div *ngIf="!aluno.cursos.length">
+            Não informado
+          </div>
+          <div *ngIf="aluno.cursos.length">           
+            {{aluno.cursos[0].nome | uppercase}}        
+          </div>
+        </td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-success" tooltip="Editar" (click)="editarAluno(aluno, template)">
+              <i class="fa fa-edit"></i>
+            </button>
+            <button class="btn btn-sm btn-danger" tooltip="Excluir" (click)="excluirAluno(aluno, confirm)">
+              <i class="fa fa-eraser"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>  
+  </table> 
+</div>
+
+<div bsModal #template="bs-modal" class="modal fade" tabindex="-1"
+role="dialog" aria-labelledby="dialog-sizes-name1">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 id="dialog-sizes-name1" class="modal-title pull-left">Cadastro</h4>
+      <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="formAluno">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Nome</label>
+            <input type="text" class="form-control" [ngClass]="cssValidator(f.nome)" formControlName="nome" placeholder="Digite um nome">              
+          </div>
+          <div class="form-group col-md-6">
+            <label>Email</label>
+            <input type="email" class="form-control" [ngClass]="cssValidator(f.email)" placeholder="Digite um email" formControlName="email">              
+          </div>                
+        </div>           
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Idade</label>
+            <input type="text" class="form-control" [ngClass]="cssValidator(f.idade)" placeholder="Digite sua idade" formControlName="idade">              
+          </div>
+          <div class="form-group col-md-6">
+            <label>Formação</label>
+            <input type="text" class="form-control" [ngClass]="cssValidator(f.formacao)" placeholder="Digite sua formação" formControlName="formacao">              
+          </div>                    
+        </div> 
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Senha</label>
+            <input type="password" class="form-control" [ngClass]="cssValidator(f.senha)" placeholder="Digite sua senha" formControlName="senha">              
+          </div>
+          <div class="form-group col-sm-6">
+            <label for="">Tipo de usuário:</label>                    
+            <select class="form-control" formControlName="tipo" type="text" [ngClass]="cssValidator(f.tipo)">                      
+            <option [value]="2">Aluno</option>
+          </select>
+          <!-- <div *ngIf="f.tipo.errors?.required && f.tipo.touched" class="invalid-feedback">
+            Tipo de usuario é obrigatório.
+          </div>           -->
+        </div>                  
+        </div>                   
+      </form>      
+      <div bsModal #templateAula="bs-modal" class="card rounded shadow-sm mt-4" *ngIf="mEdit"> 
+        <div class="p-3">
+          <div class="d-flex border-bottom">
+            <h2 class="mr-auto">
+              Cursos
+            </h2>
+            <h2>
+              <i class="fas fa-award"></i>        
+            </h2>
+          </div>
+          <p>Clique em curso para adicionar novo curso.</p>
+          <div class="form-row p-1">
+            <div [formGroup]="form" class="col">
+              <div formArrayName="cursos" *ngFor="let curso of cursos.controls; let i=index">
+                <fieldset [formGroupName]="i" class="form-group">
+                <div class="row">
+                  <div class="form-group col-md-4">
+                    <label>Nome do Curso</label>
+                    <input [ngClass]="cssValidator(cursos.get(i+'.nome'))" type="text"  class="form-control" formControlName="nome">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label>Descrição</label>
+                    <input type="text" class="form-control" [ngClass]="cssValidator(cursos.get(i+'.descricao'))" formControlName="descricao">
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <button (click)="adicionarCurso()" class="d-flex btn btn-outline-primary">
+          <i class="fa fa-plus-circle my-1"></i>
+          <b class="ml-1">Curso</b>
+        </button>
+      </div>
+    </div>
+    <br>
+  </div>
+  <div class="modal-footer d-flex">
+    <button class="btn btn-secondary" (click)="template.hide()">
+      Fechar
+    </button>
+    <button class="btn btn-success ml-auto" [disabled]="!formAluno.valid" (click)="salvarAlteracao(template)">
+      Salvar Alterações
+    </button>
+  </div>
+</div>
+</div>
+</div>
+<div bsModal #confirm="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">
+          Deletando Aluno
+        </h4>
+        <button type="button" class="close pull-right" (click)="confirm.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{ delAluno }}</p>
+      </div>    
+      <div class="modal-footer btn-group d-flex">      
+        <button type="button" class="btn btn-outline-danger" (click)="confirm.hide()">
+          CANCELAR
+        </button>
+        <button type="button" class="btn btn-outline-success" (click)="confirmDelete(confirm)">
+          DELETAR
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Tem certeza que quer deletar o curso {{this.cursoAtual.nome}}?</p>
+    <button type="button" class="btn btn-default" (click)="confirmDeleteCurso()">Sim</button>
+    <button type="button" class="btn btn-primary" (click)="declineDeleteCurso()">Não</button>
+  </div>
+</ng-template>

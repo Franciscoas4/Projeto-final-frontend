@@ -1,0 +1,39 @@
+<app-titulo class="text-center" [titulo]="'Lista Alunos'"></app-titulo>
+<div class="card rounded shadow-sm p-3">
+  <div class="d-flex">
+    <div class="input-group mb-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text">Filtro: </div>
+      </div>
+      <input type="text" class="form-control" placeholder="Filtrar por Tema e Local" [(ngModel)]="filtro" >
+    </div>
+  </div>
+  <table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>                
+        <th>#</th>
+        <th class="d-none d-md-table-cell">Nome</th>
+        <th class="d-none d-md-table-cell">Idade</th>            
+        <th class="d-none d-md-table-cell">Email</th>  
+        <th class="d-none d-md-table-cell">Formação</th>    
+        <!-- <th>Opções</th> -->
+      </tr>
+    </thead>
+    <tbody *ngIf="alunos && alunos.length">
+      <tr *ngFor="let aluno of alunosFilter">        
+        <td>{{aluno.id}}</td>
+        <td>{{aluno.nome}}</td>
+        <td>{{aluno.idade}}</td>
+        <td>{{aluno.email}}</td>
+        <td>{{aluno.formacao}}</td> 
+        <!-- <td>
+          <div class="btn-group">            
+            <button class="btn btn-sm btn-danger" tooltip="Matricular em curso" (click)="matricularCurso(curso, confirm)">
+              <i class="fa fa-eraser"></i>
+            </button>
+          </div>
+        </td> -->
+      </tr>
+    </tbody>    
+  </table> 
+</div>

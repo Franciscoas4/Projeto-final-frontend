@@ -1,0 +1,25 @@
+<div class="container">
+
+    <h1>Bem Vindo a área de professores</h1>
+    <br>
+
+    <div>
+        <h2>Lista de professores cadastrados</h2>
+    </div>
+    <table class="table table-striped" >
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nome</th>
+          <th scope="col">E-mail</th>
+        </tr>
+      </thead>
+      <tbody  *ngFor="let p of professor">
+        <tr >
+          <td>{{ p.id }}</td>
+          <td>{{ p.nome }}</td>
+          <td>{{ p.email }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

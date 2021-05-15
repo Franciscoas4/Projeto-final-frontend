@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light" *ngIf="showHeader()">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="">Stefacoin</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item" *ngIf="usuario?.tipo === 1">
+          <a class="nav-link active" aria-current="page" href="/area-professor">Area do Professor</a>
+        </li>
+        <li class="nav-item" *ngIf="usuario?.tipo === 1">
+          <a class="nav-link active" aria-current="page" href="/curso-cad">Cursos</a>
+        </li>
+        <li class="nav-item" *ngIf="usuario?.tipo === 1">
+          <a class="nav-link active" aria-current="page" href="/professor-list">Professores</a>
+        </li>
+        <li class="nav-item" *ngIf="usuario?.tipo === 1">
+          <a class="nav-link active" aria-current="page" href="/professor-novo">Cadastrar Professores</a>
+        </li>
+        <li class="nav-item" *ngIf="usuario?.tipo === 1">
+          <a class="nav-link active" aria-current="page" href="/aluno-list">Alunos</a>
+        </li>
+        <li class="nav-item" *ngIf="usuario?.tipo === 2">
+          <a class="nav-link" href="/aluno">Area do Aluno</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav justify-content-end ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" (click)="logout()">Sair</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
